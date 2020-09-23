@@ -7,6 +7,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <Eigen/Dense>
+#include <algorithm>
 
 struct arguments {
 	std::string path;
@@ -48,6 +50,8 @@ std::vector<std::string> giveFiles(std::string pattern) {
 	return files;
 }
 
+// Eigen::Map<Matrix4f> eigenT( cvT.data() ); 
+
 
 
 int main(int argc, char* argv[]) {
@@ -59,11 +63,15 @@ int main(int argc, char* argv[]) {
 	std::string rgbImgPath = args.path;
 	rgbImgPath += "/*rgb.png";
 	std::cout << depthImgPath << std::endl;
-	auto depthImages = giveFiles(depthImgPath);
-	auto rgbImages = giveFiles(rgbImgPath);
-    cv::Mat img = cv::imread(rgbImages[0], cv::IMREAD_COLOR);
+	auto depthImageNames = giveFiles(depthImgPath);
+	auto rgbImageNames = giveFiles(rgbImgPath);
+
+	// sort the data in an increasin lexicographical order
+	std::sort(rgbImageNames.begin(), rgbImageNames.end());
+	std::sort(depthImageNames.begin(), depthImageNames.end());
+    cv::Mat img = cv::imread(rgbImageNames[0], cv::IMREAD_COLOR);
 	if(img.empty()) {
-        std::cout << "Could not read the image: " << rgbImages[0] << std::endl;
+        std::cout << "Could not read the image: " << rgbImageNames[0] << std::endl;
         return 1;
     }
     cv::imshow("Display window", img);

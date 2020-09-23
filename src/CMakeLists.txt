@@ -11,6 +11,6 @@ target_include_directories(PCL_Implementation PUBLIC ${CMAKE_SOURCE_DIR}/include
 						${PCL_INCLUDE_DIRS}
 						)
 
-target_link_libraries(PCL_Implementation ${OpenCV_LIBS} ${PCL_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(PCL_Implementation Eigen3::Eigen ${OpenCV_LIBS} ${PCL_LIBRARIES} ${Boost_LIBRARIES})
 
 # target_link_libraries(PCL_Implementation ${PCL_LIBRARIES} ${Boost_LIBRARIES})
