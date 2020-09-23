@@ -4,6 +4,9 @@
 #include <math.h>
 #include <glob.h>
 #include <vector>
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
 
 std::vector<std::string> giveFiles(std::string pattern) {
 	glob_t glob_result;
@@ -22,7 +25,14 @@ int main(){
 	auto depthImages = giveFiles(depthImgPath);
 	auto rgbImages = giveFiles(rgbImgPath);
 	// for(auto name: files) std::cout << name << std::endl;
-	std::cout << depthImages.size() << std::endl;
-	std::cout << rgbImages.size() << std::endl;
+	// std::cout << depthImages[0] << std::endl;
+	// std::cout << rgbImages[0] << std::endl;
+    cv::Mat img = cv::imread(rgbImages[0], cv::IMREAD_COLOR);
+	if(img.empty()) {
+        std::cout << "Could not read the image: " << rgbImages[0] << std::endl;
+        return 1;
+    }
+    cv::imshow("Display window", img);
+    
 	return 0;
 }
