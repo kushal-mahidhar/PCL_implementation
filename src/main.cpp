@@ -78,7 +78,7 @@ cv::Mat calculate(int h, int w, cv::Mat depth, cv::Mat img) {
 	auto newDepth = depth.reshape(0, 1);
 	for(int i=0; i<cols; i++) {
 		all_ind.at<float>(0,i) = i%w;
-		all_ind.at<float>(1,i) = i/h;
+		all_ind.at<float>(1,i) = i/w;
 		Translate.at<float>(0,i) = t[0];
 		Translate.at<float>(1,i) = t[1];
 		Translate.at<float>(2,i) = t[2];
