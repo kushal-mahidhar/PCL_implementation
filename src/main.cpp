@@ -89,7 +89,7 @@ cv::Mat calculate(cv::Mat &imgDepth, cv::Mat img){
 	imgDepth.convertTo(imgDepth, mat_data);
 	cv::Mat allDepth = imgDepth.reshape(0, 1); // 0 channels and 1 row
 	allDepth.push_back(allDepth.row(0));
-	allDepth.push_back(allDepth.row(0));
+	cv::vconcat(allDepth, allDepth.row(0), allDepth);
 
 	// generate homogenous (u,v,1) meshgrid of pixel positions as 3 x n
 	auto alIndex  = meshCV(img.rows, img.cols);
@@ -100,21 +100,20 @@ cv::Mat calculate(cv::Mat &imgDepth, cv::Mat img){
 	
 	// camera pixels x = K [RT] X
 	// generate RT matrix from individual R and T matrix
-	cv::Mat RT = R.t();
-	RT.push_back(T.t());
-	RT = RT.t();
+	cv::Mat RT;
+	cv::hconcat(R, T, RT);
 
 	cv::Mat newImg = KK * RT * worldCord;
 	newImg.row(0) /= newImg.row(2);
 	newImg.row(1) /= newImg.row(2);
 	newImg.row(2) /= newImg.row(2);
 
+	
 	cv:: Mat map_x = cv::Mat(1, newImg.cols, mat_data);
 	newImg.row(0).copyTo(map_x.row(0));
 	map_x = map_x.reshape(0, img.rows);
 
-	cv:: Mat map_y = cv::Mat(1, newImg.cols, mat_data);
-	newImg.row(1).copyTo(map_y.row(0));
+	cv:: Mat map_y = newImg.row(1);
 	map_y = map_y.reshape(0, img.rows);
 
 	cv::Mat dst;
