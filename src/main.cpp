@@ -8,6 +8,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include "opencv2/imgproc.hpp"
+#include "cloud.h"
 
 struct arguments {
 	std::string path;
@@ -86,9 +87,9 @@ cv::Mat calculate(int h, int w, cv::Mat depth, cv::Mat img) {
 		allDepth.at<float>(1,i) = newDepth.at<float>(0,i);
 		allDepth.at<float>(2,i) = newDepth.at<float>(0,i);
 	}
-	
-	cv::Mat inb = KK*(R*((KK_ir_inv*all_ind).mul(allDepth)) + Translate);
-
+	cv::Mat indices = (KK_ir_inv*all_ind).mul(allDepth);
+	cv::Mat inb = KK*(R*indices + Translate);
+	createCloudFromImage(img, indices, depth);
 	for(int i=0; i<h; i++) {
 		for(int j=0; j<w; j++) {
 			map_x.at<float>(i,j) = inb.at<float>(0, i*w+j) / inb.at<float>(2, i*w+j);
